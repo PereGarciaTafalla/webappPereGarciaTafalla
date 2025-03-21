@@ -13,7 +13,7 @@ body {
     background-color: #d1f2eb;    /* color de fons en format #RRGGBB */
 }
 #superior {
-    display: none;
+    display: flex;
     height: 8vmax;    /* alçària d'un 8% respecte l'alçària de la pantalla */
     justify-content: center;    /* centra els elements en la direcció de disposició */
     align-items: center;    /* centra els elements en la direcció perpendicular a la de disposició */
