@@ -59,6 +59,9 @@ body {
         flex-direction: column;
         width: 8vmax;
         height: auto;    /* sobreescriu la declaració height: 8vmax; */
+    } 
+    #seccio_5 {
+        flex-direction: row;
     }
 }
 #seccio_0 {
@@ -91,3 +94,18 @@ body {
     padding: 2vmin;
     margin: 1vmin;
 }
+#webcam-container {
+    margin: 2vh;
+}
+#reconeixement {
+    text-align:center;
+}
+#coincidencia {
+    display: none;    /* es farà visible quan es comencin a tenir dades */
+    font-size: 4vh;
+    margin-bottom: 1vh;
+}
+#prediccions {
+    font-size: 3vh;
+}
+
