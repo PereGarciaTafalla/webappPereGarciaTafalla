@@ -108,4 +108,17 @@ body {
 #prediccions {
     font-size: 3vh;
 }
-
+#seccio_6 {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#div_diagrama {
+    width: 80vmin;
+    font-size: 5vh;   
+    text-align: center;
+}
+#div_valor {
+    font-size: 15vh; 
+    margin-top: 5vh;  
+}
