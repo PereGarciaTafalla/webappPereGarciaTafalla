@@ -2,6 +2,7 @@
 let validat = false;    // variable que permet saber si hi ha algun usuari validat
 let nom, contrasenya;
 let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec"  // s'ha de substituir la cadena de text per la URL del script
+
 function canvia_seccio(num_boto) {
     const menu = document.getElementById("menu");
     const num_botons = menu.children.length;    // el nombre de botons dins de l'element "menu"
