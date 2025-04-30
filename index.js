@@ -2,7 +2,7 @@
 let validat = false;    // variable que permet saber si hi ha algun usuari validat
 let nom, contrasenya;
 let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec"  // s'ha de substituir la cadena de text per la URL del script
-let consulta = scriptURL + "?query=select&where=Tipus&is=Turisme";
+
 
 function canvia_seccio(num_boto) {
     const menu = document.getElementById("menu");
