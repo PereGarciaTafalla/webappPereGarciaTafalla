@@ -1,8 +1,6 @@
-<script src="index.js"></script>
 let validat = false;    // variable que permet saber si hi ha algun usuari validat
 let nom, contrasenya;
-let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec"  // s'ha de substituir la cadena de text per la URL del script
-
+let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec";  // s'ha de substituir la cadena de text per la URL del script
 
 function canvia_seccio(num_boto) {
     const menu = document.getElementById("menu");
@@ -14,8 +12,7 @@ function canvia_seccio(num_boto) {
             boto.style.color = "#950E17";    // es destaca la secció activa amb el canvi de colors del botó corresponent
             boto.style.backgroundColor = "#FCDEE0";
             seccio.style.display = "flex";    // es fa visible la secció activa
-        }
-        else {
+        } else {
             boto.style.color = "white";    // colors dels botons de seccions inactives
             boto.style.backgroundColor = "#950E17";
             seccio.style.display = "none";    // s'oculten les seccions inactives
@@ -23,7 +20,7 @@ function canvia_seccio(num_boto) {
     }
 }
 
-function inici_sessio() {
+function validacio_sessio() {
     nom = document.getElementById("nom_usuari").value;    // la propietat "value" d'un quadre de text correspon al text escrit per l'usuari
     contrasenya = document.getElementById("contrasenya").value;
     let consulta = scriptURL + "?query=select&where=usuari&is=" + nom + "&and=contrasenya&equal=" + contrasenya;
@@ -34,18 +31,19 @@ function inici_sessio() {
         .then((resposta) => {
             if(resposta.length == 0) {    // llista buida
                 window.alert("El nom d'usuari o la contrasenya no són correctes.");
-            }
-            else {    // llista amb (almenys) un registre
+            } else {    // llista amb (almenys) un registre
                 window.alert("S'ha iniciat correctament la sessió.");
                 inicia_sessio();    // usuari validat, s'executen les instruccions del procediment "inicia_sessio"
             }
         });    
 }
+
 function inicia_sessio() {
     validat = true;    // usuari validat
     document.getElementById("seccio_0").style.display = "none";    // s'oculta la secció de validació d'usuaris
     canvia_seccio(1);    // es mostra la secció 1
 }
+
 function nou_usuari() {
     nom = document.getElementById("nom_usuari").value;
     contrasenya = document.getElementById("contrasenya").value;
@@ -60,32 +58,33 @@ function nou_usuari() {
                 fetch(consulta_2)
                     .then((resposta) => {
                         if (resposta.ok) {    // s'ha pogut afegir una registre en la base de dades
-                            window.alert("S'ha completat el registre d'usuari.")
+                            window.alert("S'ha completat el registre d'usuari.");
                             inicia_sessio();
                         }
                         else {    // no s'ha pogut afegir un registre en la base de dades
-                            alert("S'ha produït un error en el registre d'usuari.")
+                            alert("S'ha produït un error en el registre d'usuari.");
                         }
-                    })
+                    });
             } 
             else {    // l'usuari ha de tornar-ho a intentar amb un nom diferent
                 alert("Ja existeix un usuari amb aquest nom.");
             }
         });
 }
-window.onload = () => { 
-    let base_de_dades = storage.getItem("base_de_dades");   
+
+window.onload = () => {
+    let base_de_dades = localStorage.getItem("base_de_dades");   
     if(base_de_dades == null) {
         indexedDB.open("Dades").onupgradeneeded = event => {   
             event.target.result.createObjectStore("Fotos", {keyPath: "ID", autoIncrement:true}).createIndex("Usuari_index", "Usuari");
-        }    // les fotos es desen a la taula "Fotos"
-        storage.setItem("base_de_dades","ok");
+        };    // les fotos es desen a la taula "Fotos"
+        localStorage.setItem("base_de_dades","ok");
     }
     document.getElementById("obturador").addEventListener("change", function() {    // procediment que s'executa quan s'obté el fitxer de la foto realitzada (esdeveniment "change")
         if(this.files[0] != undefined) {    // instruccions que s'executen només si s'obté algun fitxer (només es processa el primer que es rebi)
             let canvas = document.getElementById("canvas");    // contenidor on es desa temporalment la imatge
             let context = canvas.getContext("2d");
-            let imatge = new Image;
+            let imatge = new Image();
             imatge.src = URL.createObjectURL(this.files[0]);    // es crea la imatge a partir del fitxer
             imatge.onload = () => {    // procediment que s'executa un cop la imatge s'ha carregat en el contenidor
                 canvas.width = imatge.width;
@@ -94,13 +93,14 @@ window.onload = () => {
                 document.getElementById("foto").src = canvas.toDataURL("image/jpeg");    // la imatge es mostra en format jpg
                 document.getElementById("icona_camera").style.display = "none";    // s'oculta la icona que hi havia abans de fer la foto
                 document.getElementById("desa").style.display = "unset";    // es mostra el botó per desar la foto
-            }
+            };
         }
     });
-}
+};
+
 function desa_foto() {
     let nou_registre = {    // contingut del nou registre de la base de dades
-        Usuari: usuari,    // nom d'usuari
+        Usuari: nom,    // nom d'usuari
         Data: new Date().toLocaleDateString() + " - " + new Date().toLocaleTimeString(),    // data i hora actuals
         Foto: document.getElementById("foto").src    // foto
     };
@@ -111,23 +111,24 @@ function desa_foto() {
         };
     };
 }
+
 function mostra_foto(id) {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
-    let imatge = new Image;
+    let imatge = new Image();
+    let seccio_origen;
     if (id == 0) {    // darrera foto realitzada, potser sense desar
         seccio_origen = 2;    // origen en la seccció "càmera"
         document.getElementById("seccio_2").style.display = "none";    // s'oculta la secció "càmera"
         imatge.src = document.getElementById("foto").src;
-    }
-    else {
+    } else {
         seccio_origen = 3;    // origen en la seccció "galeria"
         indexedDB.open("Dades").onsuccess = event => {    // s'obté la foto de la base de dades
-            event.target.result.transaction(["Fotos"], "readonly").objectStore("Fotos").get(id).onsuccess = event => {
+            event.target.result.transaction(["Fotos"], "readonly").objectStore("Fotos").get(id).onsuccess = event2 => {
                 document.getElementById("seccio_3").style.display = "none";    // s'oculta la secció "galeria"
-                imatge.src = event.target.result["Foto"];
-            }
-        }
+                imatge.src = event2.target.result["Foto"];
+            };
+        };
     }
     imatge.onload = () => {    // esdeveniment que es produeix un cop s'ha carregat la imatge
         if (imatge.width > imatge.height) {    // imatge apaïsada
@@ -141,7 +142,7 @@ function mostra_foto(id) {
         }
         context.drawImage(imatge,0,0,imatge.width,imatge.height);
         document.getElementById("foto_gran").src = canvas.toDataURL("image/jpeg", 0.5);
-    }
+    };
     document.getElementById("superior").classList.add("ocult");    // s'oculta provisionalment el contenidor superior
     document.getElementById("menu").style.display = "none";    // s'oculta el menú
     document.getElementById("div_gran").style.display = "flex";    // es mostra el contenidor de la foto a pantalla completa
