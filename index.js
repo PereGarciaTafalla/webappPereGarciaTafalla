@@ -1,113 +1,112 @@
-let validat = false;    // variable que permet saber si hi ha algun usuari validat
+let validat = false;
 let nom, contrasenya;
-let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec";  // s'ha de substituir la cadena de text per la URL del script
+let scriptURL = "https://script.google.com/macros/s/AKfycbyHa4Q8TbuIMnbDo6Fj7mpzyHT0QTaT5nen3uuUstWo90H0cH9mrO85Zggl7wwXXDB0/exec";
 
 function canvia_seccio(num_boto) {
     const menu = document.getElementById("menu");
-    const num_botons = menu.children.length;    // el nombre de botons dins de l'element "menu"
-    for (let i = 1; i < num_botons; i++) {
+    const num_botons = menu.children.length - 1; // L'últim és el logout
+    for (let i = 1; i <= num_botons; i++) {
         let boto = document.getElementById("boto_" + i);
         let seccio = document.getElementById("seccio_" + i);
-        if (i == num_boto) {
-            boto.style.color = "#950E17";    // es destaca la secció activa amb el canvi de colors del botó corresponent
+        if (i === num_boto) {
+            boto.classList.add('active');
+            boto.style.color = "#950E17";
             boto.style.backgroundColor = "#FCDEE0";
-            seccio.style.display = "flex";    // es fa visible la secció activa
+            seccio.style.display = "block";
         } else {
-            boto.style.color = "white";    // colors dels botons de seccions inactives
+            boto.classList.remove('active');
+            boto.style.color = "white";
             boto.style.backgroundColor = "#950E17";
-            seccio.style.display = "none";    // s'oculten les seccions inactives
+            seccio.style.display = "none";
         }
     }
+    document.getElementById("superior").classList.remove("ocult");
+    document.getElementById("menu").style.display = "flex";
+    document.getElementById("div_gran").style.display = "none";
 }
 
 function validacio_sessio() {
-    nom = document.getElementById("nom_usuari").value;    // la propietat "value" d'un quadre de text correspon al text escrit per l'usuari
+    nom = document.getElementById("nom_usuari").value;
     contrasenya = document.getElementById("contrasenya").value;
     let consulta = scriptURL + "?query=select&where=usuari&is=" + nom + "&and=contrasenya&equal=" + contrasenya;
     fetch(consulta)
-        .then((resposta) => {   // registres que contenen el nom d'usuari i contrasenya escrits per l'usuari
-            return resposta.json();    // conversió a llista
-        })
+        .then((resposta) => resposta.json())
         .then((resposta) => {
-            if(resposta.length == 0) {    // llista buida
+            if(resposta.length === 0) {
                 window.alert("El nom d'usuari o la contrasenya no són correctes.");
-            } else {    // llista amb (almenys) un registre
+            } else {
                 window.alert("S'ha iniciat correctament la sessió.");
-                inicia_sessio();    // usuari validat, s'executen les instruccions del procediment "inicia_sessio"
+                inicia_sessio();
             }
-        });    
+        });
 }
 
 function inicia_sessio() {
-    validat = true;    // usuari validat
-    document.getElementById("seccio_0").style.display = "none";    // s'oculta la secció de validació d'usuaris
-    canvia_seccio(1);    // es mostra la secció 1
+    validat = true;
+    document.getElementById("seccio_0").style.display = "none";
+    canvia_seccio(1);
 }
 
 function nou_usuari() {
     nom = document.getElementById("nom_usuari").value;
     contrasenya = document.getElementById("contrasenya").value;
-    let consulta_1 = scriptURL + "?query=select&where=usuari&is=" + nom;    // primera consulta per saber si ja existeix algun usuari amb el nom escrit per l'usuari que es vol registrar
+    let consulta_1 = scriptURL + "?query=select&where=usuari&is=" + nom;
     fetch(consulta_1)
+        .then((resposta) => resposta.json())
         .then((resposta) => {
-            return resposta.json();
-        })
-        .then((resposta) => {
-            if(resposta.length == 0) {    // No hi ha cap altres usuari amb el mateix nom
-                let consulta_2 = scriptURL + "?query=insert&values=" + nom + "$$" + contrasenya;    // segona consulta per registrar l'usuari nou
+            if(resposta.length === 0) {
+                let consulta_2 = scriptURL + "?query=insert&values=" + nom + "$$" + contrasenya;
                 fetch(consulta_2)
                     .then((resposta) => {
-                        if (resposta.ok) {    // s'ha pogut afegir una registre en la base de dades
+                        if (resposta.ok) {
                             window.alert("S'ha completat el registre d'usuari.");
                             inicia_sessio();
-                        }
-                        else {    // no s'ha pogut afegir un registre en la base de dades
+                        } else {
                             alert("S'ha produït un error en el registre d'usuari.");
                         }
                     });
-            } 
-            else {    // l'usuari ha de tornar-ho a intentar amb un nom diferent
+            } else {
                 alert("Ja existeix un usuari amb aquest nom.");
             }
         });
 }
 
 window.onload = () => {
-    let base_de_dades = localStorage.getItem("base_de_dades");   
+    let base_de_dades = localStorage.getItem("base_de_dades");
     if(base_de_dades == null) {
-        indexedDB.open("Dades").onupgradeneeded = event => {   
+        indexedDB.open("Dades").onupgradeneeded = event => {
             event.target.result.createObjectStore("Fotos", {keyPath: "ID", autoIncrement:true}).createIndex("Usuari_index", "Usuari");
-        };    // les fotos es desen a la taula "Fotos"
+        };
         localStorage.setItem("base_de_dades","ok");
     }
-    document.getElementById("obturador").addEventListener("change", function() {    // procediment que s'executa quan s'obté el fitxer de la foto realitzada (esdeveniment "change")
-        if(this.files[0] != undefined) {    // instruccions que s'executen només si s'obté algun fitxer (només es processa el primer que es rebi)
-            let canvas = document.getElementById("canvas");    // contenidor on es desa temporalment la imatge
+    document.getElementById("obturador").addEventListener("change", function() {
+        if(this.files[0] !== undefined) {
+            let canvas = document.getElementById("canvas");
             let context = canvas.getContext("2d");
             let imatge = new Image();
-            imatge.src = URL.createObjectURL(this.files[0]);    // es crea la imatge a partir del fitxer
-            imatge.onload = () => {    // procediment que s'executa un cop la imatge s'ha carregat en el contenidor
+            imatge.src = URL.createObjectURL(this.files[0]);
+            imatge.onload = () => {
                 canvas.width = imatge.width;
-                canvas.height = imatge.height;                
-                context.drawImage(imatge,0,0,imatge.width,imatge.height);    // es "dibuixa" la imatge en el canvas
-                document.getElementById("foto").src = canvas.toDataURL("image/jpeg");    // la imatge es mostra en format jpg
-                document.getElementById("icona_camera").style.display = "none";    // s'oculta la icona que hi havia abans de fer la foto
-                document.getElementById("desa").style.display = "unset";    // es mostra el botó per desar la foto
+                canvas.height = imatge.height;
+                context.drawImage(imatge,0,0,imatge.width,imatge.height);
+                document.getElementById("foto").src = canvas.toDataURL("image/jpeg");
+                document.getElementById("icona_camera").style.display = "none";
+                document.getElementById("desa").style.display = "inline-block";
             };
         }
     });
 };
 
 function desa_foto() {
-    let nou_registre = {    // contingut del nou registre de la base de dades
-        Usuari: nom,    // nom d'usuari
-        Data: new Date().toLocaleDateString() + " - " + new Date().toLocaleTimeString(),    // data i hora actuals
-        Foto: document.getElementById("foto").src    // foto
+    let nou_registre = {
+        Usuari: nom,
+        Data: new Date().toLocaleDateString() + " - " + new Date().toLocaleTimeString(),
+        Foto: document.getElementById("foto").src
     };
-    indexedDB.open("Dades").onsuccess = event => {   
+    indexedDB.open("Dades").onsuccess = event => {
         event.target.result.transaction("Fotos", "readwrite").objectStore("Fotos").add(nou_registre).onsuccess = () => {
             document.getElementById("desa").style.display = "none";
-            alert("La foto s'ha desat correctament.");    
+            alert("La foto s'ha desat correctament.");
         };
     };
 }
@@ -116,34 +115,37 @@ function mostra_foto(id) {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
     let imatge = new Image();
-    let seccio_origen;
-    if (id == 0) {    // darrera foto realitzada, potser sense desar
-        seccio_origen = 2;    // origen en la seccció "càmera"
-        document.getElementById("seccio_2").style.display = "none";    // s'oculta la secció "càmera"
+    if (id == 0) {
+        document.getElementById("seccio_2").style.display = "none";
         imatge.src = document.getElementById("foto").src;
     } else {
-        seccio_origen = 3;    // origen en la seccció "galeria"
-        indexedDB.open("Dades").onsuccess = event => {    // s'obté la foto de la base de dades
+        indexedDB.open("Dades").onsuccess = event => {
             event.target.result.transaction(["Fotos"], "readonly").objectStore("Fotos").get(id).onsuccess = event2 => {
-                document.getElementById("seccio_3").style.display = "none";    // s'oculta la secció "galeria"
+                document.getElementById("seccio_3").style.display = "none";
                 imatge.src = event2.target.result["Foto"];
             };
         };
     }
-    imatge.onload = () => {    // esdeveniment que es produeix un cop s'ha carregat la imatge
-        if (imatge.width > imatge.height) {    // imatge apaïsada
+    imatge.onload = () => {
+        if (imatge.width > imatge.height) {
             canvas.width = imatge.height;
             canvas.height = imatge.width;
             context.translate(imatge.height, 0);
             context.rotate(Math.PI / 2);
-        } else {    // imatge vertical
+        } else {
             canvas.width = imatge.width;
             canvas.height = imatge.height;
         }
         context.drawImage(imatge,0,0,imatge.width,imatge.height);
         document.getElementById("foto_gran").src = canvas.toDataURL("image/jpeg", 0.5);
     };
-    document.getElementById("superior").classList.add("ocult");    // s'oculta provisionalment el contenidor superior
-    document.getElementById("menu").style.display = "none";    // s'oculta el menú
-    document.getElementById("div_gran").style.display = "flex";    // es mostra el contenidor de la foto a pantalla completa
+    document.getElementById("superior").classList.add("ocult");
+    document.getElementById("menu").style.display = "none";
+    document.getElementById("div_gran").style.display = "flex";
+}
+
+function tanca_foto_gran() {
+    document.getElementById("div_gran").style.display = "none";
+    document.getElementById("superior").classList.remove("ocult");
+    document.getElementById("menu").style.display = "flex";
 }

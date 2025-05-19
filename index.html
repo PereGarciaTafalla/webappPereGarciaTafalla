@@ -1,94 +1,213 @@
 <!DOCTYPE html>
-<html lang="ca">    
-  <head>
-    <meta charset="UTF-8">   
-    <meta name="viewport" content="width=device-width, initial-scale=1">    
-    <meta name="description" content="Descripció de la nostra webapp.">   
-    <title>Webapp Pere</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/solid.min.css">
-    <link rel="stylesheet" href="index.css">
-    <style>
-      .seccio { display: none; }
-      #seccio_0 { display: block; }
-      #div_gran { display: none; flex-direction: column; align-items: center; }
-      #canvas { display: none; }
-    </style>
-  </head>
-  <body>
-    <div id="superior">Webapp de Pere</div>
-    <div id="seccio_0" class="seccio">
-      <div>Inici de sessió</div>
-      <div id="credencials">
-        <div>
-          <label for="nom_usuari">Nom d'usuari</label>
-          <input type="text" id="nom_usuari">
-        </div>
-        <div>
-          <label for="contrasenya">Contrasenya</label>
-          <input type="password" id="contrasenya">
-        </div>
-      </div>
-      <div id="botons_sessio">
-        <button onclick="validacio_sessio()">Inicia sessió</button>
-        <button onclick="nou_usuari()">Nou usuari</button>
-      </div>
-    </div>
-    <div id="menu">
-      <i id="boto_1" class="fa-solid fa-house" onclick="canvia_seccio(1)"></i>
-      <i id="boto_2" class="fa-solid fa-camera" onclick="canvia_seccio(2)"></i>
-      <i id="boto_3" class="fa-solid fa-image" onclick="canvia_seccio(3)"></i>
-      <i id="boto_4" class="fa-solid fa-map" onclick="canvia_seccio(4)"></i>
-      <i id="boto_5" class="fa-solid fa-brain" onclick="canvia_seccio(5)"></i>
-      <i id="boto_6" class="fa-solid fa-chart-line" onclick="canvia_seccio(6)"></i>
-      <i class="fa-solid fa-right-from-bracket" onclick="tanca_seccio()"></i>
-    </div>
-    <div id="seccio_1" class="seccio">
-      Secció 1
-    </div>
-    <div id="seccio_2" class="seccio">
-      <div id="div_foto">
-        <img id="foto">
-        <i id="icona_camera" class="fa-solid fa-image"></i>
-        <i id="desa" class="fa-solid fa-check" onclick="desa_foto()"></i>
-      </div>
-      <div id="div_control">
-        <label for="obturador">
-          <i class="fa-solid fa-circle-dot"></i>
-        </label>
-        <input type="file" accept="image/*" id="obturador" capture="camera" />
-        <canvas id="canvas"></canvas>
-      </div>
-    </div>
-    <div id="seccio_3" class="seccio">
-      <div id="llista_titol">
-        <i class="fa-solid fa-image"></i>
-        <i class="fa-solid fa-calendar-days"></i>
-        <i class="fa-solid fa-trash"></i>
-      </div>
-      <div id="llista_fotos"></div>
-    </div>
-    <div id="seccio_4" class="seccio"></div>
-    <div id="seccio_5" class="seccio">
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Descripció de la nostra webapp.">
+  <title>Webapp Pere</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/solid.min.css">
+  <link rel="stylesheet" href="index.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f8f8;
+      margin: 0;
+      padding: 0;
+    }
+    #superior {
+      background: #950E17;
+      color: #fff;
+      padding: 16px;
+      font-size: 1.3em;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    #menu {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      background: #950E17;
+      padding: 10px 0;
+    }
+    #menu i {
+      color: #fff;
+      font-size: 1.5em;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    #menu i.active, #menu i:focus {
+      color: #950E17;
+      background: #FCDEE0;
+      outline: none;
+    }
+    .seccio {
+      display: none;
+      max-width: 500px;
+      margin: 30px auto 0 auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 24px 16px;
+    }
+    #seccio_0 { display: block; }
+    #div_foto {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    #foto {
+      width: 220px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #eee;
+      border: 1px solid #ccc;
+      display: block;
+    }
+    #icona_camera {
+      font-size: 2em;
+      color: #aaa;
+      margin-top: -30px;
+      margin-bottom: 10px;
+    }
+    #desa {
+      font-size: 2em;
+      color: #2ecc40;
+      background: #fff;
+      border-radius: 50%;
+      padding: 8px;
+      display: none;
+      cursor: pointer;
+      border: 2px solid #2ecc40;
+      margin-top: 10px;
+    }
+    #div_control {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    #div_control label {
+      cursor: pointer;
+    }
+    #div_control input[type=file] {
+      display: none;
+    }
+    #canvas {
+      display: none;
+    }
+    #div_gran {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.9);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    #foto_gran {
+      max-width: 90vw;
+      max-height: 80vh;
+      border-radius: 12px;
+      box-shadow: 0 0 24px #000a;
+    }
+    #div_gran .tanca {
+      color: #fff;
+      font-size: 2em;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    @media (max-width: 600px) {
+      .seccio { max-width: 98vw; padding: 10vw 2vw; }
+      #foto { width: 90vw; height: 90vw; }
+    }
+  </style>
+</head>
+<body>
+  <div id="superior">Webapp de Pere</div>
+  <div id="menu">
+    <i id="boto_1" class="fa-solid fa-house" onclick="canvia_seccio(1)"></i>
+    <i id="boto_2" class="fa-solid fa-camera" onclick="canvia_seccio(2)"></i>
+    <i id="boto_3" class="fa-solid fa-image" onclick="canvia_seccio(3)"></i>
+    <i id="boto_4" class="fa-solid fa-map" onclick="canvia_seccio(4)"></i>
+    <i id="boto_5" class="fa-solid fa-brain" onclick="canvia_seccio(5)"></i>
+    <i id="boto_6" class="fa-solid fa-chart-line" onclick="canvia_seccio(6)"></i>
+    <i class="fa-solid fa-right-from-bracket" onclick="tanca_seccio()"></i>
+  </div>
+  <div id="seccio_0" class="seccio">
+    <h2>Inici de sessió</h2>
+    <div id="credencials">
       <div>
-        <i id="icona_video" class="fa-solid fa-video"></i>
-        <div id="webcam-container"></div>
+        <label for="nom_usuari">Nom d'usuari</label>
+        <input type="text" id="nom_usuari">
       </div>
-      <div id="reconeixement">
-        <div id="coincidencia">COINCIDÈNCIA</div>
-        <div id="prediccions"></div>
+      <div>
+        <label for="contrasenya">Contrasenya</label>
+        <input type="password" id="contrasenya">
       </div>
     </div>
-    <div id="seccio_6" class="seccio">
-      <div id="div_diagrama">
-        NIVELL DE LLUM
-        <canvas id="diagrama"></canvas>
-      </div>
-      <div id="div_valor"></div>
+    <div id="botons_sessio">
+      <button onclick="validacio_sessio()">Inicia sessió</button>
+      <button onclick="nou_usuari()">Nou usuari</button>
     </div>
-    <div id="div_gran">
-      <img id="foto_gran" />
+  </div>
+  <div id="seccio_1" class="seccio">
+    <h2>Secció 1</h2>
+    <p>Contingut de la secció 1.</p>
+  </div>
+  <div id="seccio_2" class="seccio">
+    <h2>Fes una foto</h2>
+    <div id="div_foto">
+      <img id="foto" src="" alt="Foto">
+      <i id="icona_camera" class="fa-solid fa-image"></i>
+      <i id="desa" class="fa-solid fa-check" onclick="desa_foto()"></i>
     </div>
-    <script src="index.js"></script>
-  </body>
+    <div id="div_control">
+      <label for="obturador">
+        <i class="fa-solid fa-circle-dot"></i> Fes foto
+      </label>
+      <input type="file" accept="image/*" id="obturador" capture="camera" />
+      <canvas id="canvas"></canvas>
+    </div>
+  </div>
+  <div id="seccio_3" class="seccio">
+    <h2>Galeria</h2>
+    <div id="llista_titol">
+      <i class="fa-solid fa-image"></i>
+      <i class="fa-solid fa-calendar-days"></i>
+      <i class="fa-solid fa-trash"></i>
+    </div>
+    <div id="llista_fotos"></div>
+  </div>
+  <div id="seccio_4" class="seccio"></div>
+  <div id="seccio_5" class="seccio">
+    <div>
+      <i id="icona_video" class="fa-solid fa-video"></i>
+      <div id="webcam-container"></div>
+    </div>
+    <div id="reconeixement">
+      <div id="coincidencia">COINCIDÈNCIA</div>
+      <div id="prediccions"></div>
+    </div>
+  </div>
+  <div id="seccio_6" class="seccio">
+    <div id="div_diagrama">
+      NIVELL DE LLUM
+      <canvas id="diagrama"></canvas>
+    </div>
+    <div id="div_valor"></div>
+  </div>
+  <div id="div_gran">
+    <img id="foto_gran" />
+    <span class="tanca" onclick="tanca_foto_gran()">&times;</span>
+  </div>
+  <script src="index.js"></script>
+</body>
 </html>
+
