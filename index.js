@@ -40,6 +40,25 @@ function validacio_sessio() {
             }
         });
 }
+function tanca_seccio() {
+    // Amaga totes les seccions menys la de login
+    for (let i = 1; i <= 6; i++) {
+        let seccio = document.getElementById("seccio_" + i);
+        if (seccio) seccio.style.display = "none";
+    }
+    // Mostra la secció de login
+    document.getElementById("seccio_0").style.display = "block";
+    // Treu l'estat actiu dels botons del menú
+    for (let i = 1; i <= 6; i++) {
+        let boto = document.getElementById("boto_" + i);
+        if (boto) boto.classList.remove('active');
+        if (boto) {
+            boto.style.color = "white";
+            boto.style.backgroundColor = "#950E17";
+        }
+    }
+}
+
 
 function inicia_sessio() {
     validat = true;
