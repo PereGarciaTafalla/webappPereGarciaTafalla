@@ -1,100 +1,94 @@
-<!DOCTYPE html>    
-<html>
+<!DOCTYPE html>
 <html lang="ca">    
   <head>
-    <script src="index.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/solid.min.css">
-    <link rel="stylesheet" href="index.css">
     <meta charset="UTF-8">   
     <meta name="viewport" content="width=device-width, initial-scale=1">    
     <meta name="description" content="Descripció de la nostra webapp.">   
-    <title>    
-        Webapp Pere
-    </title>
+    <title>Webapp Pere</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/solid.min.css">
+    <link rel="stylesheet" href="index.css">
+    <style>
+      .seccio { display: none; }
+      #seccio_0 { display: block; }
+      #div_gran { display: none; flex-direction: column; align-items: center; }
+      #canvas { display: none; }
+    </style>
   </head>
   <body>
-    <div id="superior">   
-        Webapp de Pere
-    </div>
-        <div id="seccio_0" class="seccio">
-      <div>
-        Inici de sessió    <!-- títol de la secció -->
-      </div> 
-      <div id="credencials">    <!-- contenidor per als quadres de text -->
+    <div id="superior">Webapp de Pere</div>
+    <div id="seccio_0" class="seccio">
+      <div>Inici de sessió</div>
+      <div id="credencials">
         <div>
           <label for="nom_usuari">Nom d'usuari</label>
           <input type="text" id="nom_usuari">
         </div>
         <div>
-          <label for="contrasenya">Contrasenya</label>        
+          <label for="contrasenya">Contrasenya</label>
           <input type="password" id="contrasenya">
         </div>
       </div>
-      <div id="botons_sessio">    <!-- contenidor per als botons -->
-        <button onclick="inici_sessio()">Inicia sessió</button>
+      <div id="botons_sessio">
+        <button onclick="validacio_sessio()">Inicia sessió</button>
         <button onclick="nou_usuari()">Nou usuari</button>
-      </div>   
-    </div>   
-    <div id="menu">       
-      <i id="boto_1" class="fa-solid fa-house" onclick="canvia_seccio(1)"></i>    <!-- secció inicial -->     
-      <i id="boto_2" class="fa-solid fa-camera" onclick="canvia_seccio(2)"></i>    <!-- càmera -->
-      <i id="boto_3" class="fa-solid fa-image" onclick="canvia_seccio(3)"></i>     <!-- galeria -->
-      <i id="boto_4" class="fa-solid fa-map" onclick="canvia_seccio(4)"></i>    <!-- mapa -->
+      </div>
+    </div>
+    <div id="menu">
+      <i id="boto_1" class="fa-solid fa-house" onclick="canvia_seccio(1)"></i>
+      <i id="boto_2" class="fa-solid fa-camera" onclick="canvia_seccio(2)"></i>
+      <i id="boto_3" class="fa-solid fa-image" onclick="canvia_seccio(3)"></i>
+      <i id="boto_4" class="fa-solid fa-map" onclick="canvia_seccio(4)"></i>
       <i id="boto_5" class="fa-solid fa-brain" onclick="canvia_seccio(5)"></i>
       <i id="boto_6" class="fa-solid fa-chart-line" onclick="canvia_seccio(6)"></i>
-      <i class="fa-solid fa-right-from-bracket" onclick="tanca_seccio()"></i>    <!-- tancar sessió -->
-    </div> 
-    <div id="seccio_1" class="seccio">    
-        Secció 1
-     </div>   
-      <div id="seccio_2" class="seccio">
-        <div id="div_foto">    <!-- contenidor de la vista prèvia de la foto feta -->
-          <img id="foto">
-          <i id="icona_camera" class="fa-solid fa-image"></i>
-          <i id="desa" class="fa-solid fa-check" onclick="desa_foto()"></i>    <!-- icona que ocupa l'espai quan encara no s'ha fet la foto -->
-        </div>
-        <div id="div_control">    <!-- contenidor dels botons per fer i desar la foto -->
-            <label for="obturador">    <!-- etiqueta auxiliar per ocultar el botó predeterminat -->
-              <i class="fa-solid fa-circle-dot"></i>    <!-- icona del botó per fer la foto -->
-            </label>
-            <input type="file" accept="image/*" id="obturador" capture="camera" /> <!-- element que captura la imatge -->
-            <i id="desa" class="fa-solid fa-check"></i>    <!-- icona del botó per desar la foto -->
-            <canvas id="canvas"></canvas>
-            <div id="div_gran">
-              <img id="foto_gran" />
-            </div>
-        </div>
+      <i class="fa-solid fa-right-from-bracket" onclick="tanca_seccio()"></i>
+    </div>
+    <div id="seccio_1" class="seccio">
+      Secció 1
+    </div>
+    <div id="seccio_2" class="seccio">
+      <div id="div_foto">
+        <img id="foto">
+        <i id="icona_camera" class="fa-solid fa-image"></i>
+        <i id="desa" class="fa-solid fa-check" onclick="desa_foto()"></i>
       </div>
-     <div id="seccio_3" class="seccio">
-      <div id="llista_titol">    <!-- capçalera de la llista de fotos -->
-        <i class="fa-solid fa-image"></i>    <!-- per a la miniatura de les fotos -->
-        <i class="fa-solid fa-calendar-days"></i>    <!-- per a la data de captura de les fotos -->
-        <i class="fa-solid fa-trash"></i>    <!-- per esborrar les fotos -->    
-      </div>
-      <div id="llista_fotos">    <!-- contenidor, inicialment buit, on hi haurà una fila per a cada foto -->
+      <div id="div_control">
+        <label for="obturador">
+          <i class="fa-solid fa-circle-dot"></i>
+        </label>
+        <input type="file" accept="image/*" id="obturador" capture="camera" />
+        <canvas id="canvas"></canvas>
       </div>
     </div>
-    <div id="seccio_4" class="seccio">
+    <div id="seccio_3" class="seccio">
+      <div id="llista_titol">
+        <i class="fa-solid fa-image"></i>
+        <i class="fa-solid fa-calendar-days"></i>
+        <i class="fa-solid fa-trash"></i>
+      </div>
+      <div id="llista_fotos"></div>
     </div>
+    <div id="seccio_4" class="seccio"></div>
     <div id="seccio_5" class="seccio">
       <div>
-        <i id="icona_video" class="fa-solid fa-video"></i>    <!-- icona d'una càmera de vídeo -->
-        <div id="webcam-container"></div>    <!-- contenidor de vídeo -->
+        <i id="icona_video" class="fa-solid fa-video"></i>
+        <div id="webcam-container"></div>
       </div>
-      <div id="reconeixement">    <!-- espai per visualitzar les dades -->
+      <div id="reconeixement">
         <div id="coincidencia">COINCIDÈNCIA</div>
         <div id="prediccions"></div>
       </div>
     </div>
-      <div id="seccio_6" class="seccio">
-        <div id="div_diagrama">    <!-- contenidor del diagrama de línies -->
-          NIVELL DE LLUM
-          <canvas id="diagrama"></canvas>   <!-- espai que ocuparà el diagrama --> 
-        </div>
-        <div id="div_valor">    <!-- contenidor del valor més actual -->
-        </div>
+    <div id="seccio_6" class="seccio">
+      <div id="div_diagrama">
+        NIVELL DE LLUM
+        <canvas id="diagrama"></canvas>
       </div>
+      <div id="div_valor"></div>
     </div>
+    <div id="div_gran">
+      <img id="foto_gran" />
+    </div>
+    <script src="index.js"></script>
   </body>
 </html>
